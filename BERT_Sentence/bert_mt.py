@@ -119,17 +119,17 @@ def prepare_bert_embeddings(input_df, save1, save2):
 	pre_bert = get_embeddings(input_ids1, attention_mask1, model, save1)
 	hyp_bert = get_embeddings(input_ids2, attention_mask2, model, save2)
 # Importing the datasets (Please chose appropriate folder)
-train_df = pd.read_csv('../FNC_Dataset/train_fnc_mt2nd.csv')
+train_df = pd.read_csv('../Datasets/train_fnc.csv')
 print(train_df.columns)
 le = LabelEncoder()
 # train_df['Stance'] = le.fit_transform(train_df['Stance'])
 # train_df.head()
 
 # Test set
-test_df = pd.read_csv('../FNC_Dataset/test_fnc_agdgonly.csv')
+test_df = pd.read_csv('../Datasets/test_fnc.csv')
 print(test_df.columns)
 # test_df['Stance'] = le.transform(test_df['Stance'])
 # test_df.head()
 
-prepare_bert_embeddings(train_df, "fnc/pre_bert_fnc", "fnc/hyp_bert_fnc")
-prepare_bert_embeddings(test_df, "fnc/pre_bert_test_fnc", "fnc/hyp_bert_test_fnc")
+prepare_bert_embeddings(train_df, "../Datasets/pre_bert_fnc", "../Datasets/hyp_bert_fnc")
+prepare_bert_embeddings(test_df, "../Datasets/pre_bert_test_fnc", "../Datasets/hyp_bert_test_fnc")
