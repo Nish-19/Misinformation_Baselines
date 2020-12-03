@@ -33,7 +33,7 @@ MultiChannel CNNs are used to capture local features in the input and proved eff
 With the above two models we only use the word level embeddings obtained from Glove 300d as the initial embeddings.
 
 ### Word + Sentence Level -
-Here, along with the word representations, we generate the sentence level representations using BERT(BiDirectional Encoding Representations from Transformers). The two features have separate encoders and the representation obtained from these encoders if fused and passed to the dense layer for the final classification.
+Here, along with the word representations, we generate the sentence level representations using BERT(BiDirectional Encoding Representations from Transformers). The two features have separate encoders and the representation obtained from these encoders is fused and passed to the dense layer for the final classification.
 
 ## References
 
