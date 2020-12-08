@@ -1,6 +1,7 @@
 # All general imports
 import torch
 import transformers as ppb
+from transformers import AutoTokenizer, AutoModel, AutoModelForMaskedLM, AutoModelWithLMHead
 
 import pandas as pd
 import numpy as np
@@ -60,6 +61,7 @@ def get_embeddings(input_id, attention_mask, model, name):
 		start+=100
 #store_np = np.array(store).reshape(length, 768)
 	store_np = np.stack(store)
+	print(store_np.shape)
 	store_np = store_np.reshape(store_np.shape[0]*store_np.shape[1],768)
 	extra_np = np.stack(extra)
 	extra_np = extra_np.reshape(extra_np.shape[0]*extra_np.shape[1],768)
@@ -72,19 +74,32 @@ def get_embeddings(input_id, attention_mask, model, name):
 
 def prepare_bert_embeddings(input_df, save1, save2):
 	# For DistilBERT:
-	model_class, tokenizer_class, pretrained_weights = (ppb.DistilBertModel, ppb.DistilBertTokenizer, 'distilbert-base-uncased')
+	#model_class, tokenizer_class, pretrained_weights = (ppb.DistilBertModel, ppb.DistilBertTokenizer, 'distilbert-base-uncased')
 
-	## Want BERT instead of distilBERT? Uncomment the following line:
-	#model_class, tokenizer_class, pretrained_weights = (ppb.BertModel, ppb.BertTokenizer, 'bert-base-uncased')
+	# For Bert
+	# model_class, tokenizer_class, pretrained_weights = (ppb.BertModel, ppb.BertTokenizer, 'bert-base-uncased')
 
-	# Load pretrained model/tokenizer
-	tokenizer = tokenizer_class.from_pretrained(pretrained_weights)
-	model = model_class.from_pretrained(pretrained_weights)
+	# # Load pretrained model/tokenizer
+	# tokenizer = tokenizer_class.from_pretrained(pretrained_weights)
+	# model = model_class.from_pretrained(pretrained_weights)
+	
+	# # For bio-bert
+	# tokenizer = AutoTokenizer.from_pretrained("emilyalsentzer/Bio_ClinicalBERT")
+	# model = AutoModel.from_pretrained("emilyalsentzer/Bio_ClinicalBERT")
+
+	# For covid-bert
+	tokenizer = AutoTokenizer.from_pretrained("deepset/covid_bert_base")
+	model = AutoModel.from_pretrained("deepset/covid_bert_base")	
+
+	# Covid-Sci bert
+	# model = AutoModel.from_pretrained('lordtt13/COVID-SciBERT')
+	# tokenizer = AutoTokenizer.from_pretrained('lordtt13/COVID-SciBERT')
+
 	model.to(torch.device(device))
 
 	# Applying tokenization
-	tokenized1 = input_df["Headline"].apply((lambda x: tokenizer.encode(x[:510], add_special_tokens=True)))
-	tokenized2 = input_df["Body"].apply((lambda x: tokenizer.encode(x[:510], add_special_tokens=True)))
+	tokenized1 = input_df["premise"].apply((lambda x: tokenizer.encode(x[:510], add_special_tokens=True)))
+	tokenized2 = input_df["text"].apply((lambda x: tokenizer.encode(x[:510], add_special_tokens=True)))
 
 	max_len = 0
 	for i in tokenized1.values:
@@ -118,18 +133,16 @@ def prepare_bert_embeddings(input_df, save1, save2):
 	# Getting the embeddings
 	pre_bert = get_embeddings(input_ids1, attention_mask1, model, save1)
 	hyp_bert = get_embeddings(input_ids2, attention_mask2, model, save2)
+
+
 # Importing the datasets (Please chose appropriate folder)
-train_df = pd.read_csv('../Datasets/train_fnc.csv')
+train_df = pd.read_csv('../Datasets/cstance_train_new.csv')
 print(train_df.columns)
 le = LabelEncoder()
-# train_df['Stance'] = le.fit_transform(train_df['Stance'])
-# train_df.head()
 
 # Test set
-test_df = pd.read_csv('../Datasets/test_fnc.csv')
+test_df = pd.read_csv('../Datasets/cstance_test_new.csv')
 print(test_df.columns)
-# test_df['Stance'] = le.transform(test_df['Stance'])
-# test_df.head()
 
-prepare_bert_embeddings(train_df, "../Datasets/pre_bert_fnc", "../Datasets/hyp_bert_fnc")
-prepare_bert_embeddings(test_df, "../Datasets/pre_bert_test_fnc", "../Datasets/hyp_bert_test_fnc")
+prepare_bert_embeddings(train_df, "../Datasets/cscovid/pre_bert_cs", "../Datasets/cscovid/hyp_bert_cs")
+prepare_bert_embeddings(test_df, "../Datasets/cscovid/pre_bert_test_cs", "../Datasets/cscovid/hyp_bert_test_cs")
