@@ -7,8 +7,8 @@ We extract the 768 dimensional representation of the [CLS] token for each source
 ## Different BERT Embeddings
 
 1. Standard BERT - Trained on the Wikipedia dataset.
-2. BioClinicalBERT - Trained on database containing electronic health records from ICU patients at the Beth Israel Hospital in Boston, MA.
-3. CovidSciBERT - Trained on scientific papers from the CORD-19 corpus.
+2. [BioClinicalBERT](https://huggingface.co/emilyalsentzer/Bio_ClinicalBERT) - Trained on database containing electronic health records from ICU patients at the Beth Israel Hospital in Boston, MA.
+3. [CovidSciBERT](https://huggingface.co/lordtt13/COVID-SciBERT) - Trained on scientific papers from the CORD-19 corpus.
 
 ## Running
 
